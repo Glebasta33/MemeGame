@@ -5,20 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.trusov.memegame.App
-import com.trusov.memegame.R
 import com.trusov.memegame.databinding.FragmentMemesBinding
 import com.trusov.memegame.di.ViewModelFactory
 import com.trusov.memegame.presentation.memes_fragment.adapter.MemesAdapter
 import com.trusov.memegame.presentation.memes_fragment.view_model.MemesViewModel
+import com.trusov.memegame.presentation.util.NavigationController
 import javax.inject.Inject
 
 class MemesFragment : Fragment() {
@@ -33,8 +30,13 @@ class MemesFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory)[MemesViewModel::class.java]
     }
 
+    private lateinit var controller: NavigationController
+
     override fun onAttach(context: Context) {
         (activity?.application as App).component.inject(this)
+        if (context is NavigationController) {
+            controller = context
+        }
         viewModel.getMemes()
         super.onAttach(context)
     }
@@ -57,7 +59,7 @@ class MemesFragment : Fragment() {
             memesAdapter.submitList(memes)
         }
         memesAdapter.onMemeClickListener = { meme ->
-            Toast.makeText(activity, meme.imageUrl, Toast.LENGTH_SHORT).show()
+            controller.launchMemeFullScreenFragment(meme)
         }
         binding.buttonGetQuestion.setOnClickListener {
             binding.cardQuestion.isGone = false
