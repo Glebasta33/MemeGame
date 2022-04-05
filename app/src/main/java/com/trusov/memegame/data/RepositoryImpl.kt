@@ -59,7 +59,7 @@ class RepositoryImpl @Inject constructor() : Repository {
 
     companion object {
         private const val SOURCE_URL = "https://apimeme.com/create/Criana"
-        private const val BASE_URL = "http://apimeme.com/meme?meme="
+        private const val BASE_URL = "https://apimeme.com/meme?meme="
         private const val END_URL = "&top=+&bottom=+"
 
         private const val PATTERN_START = "<div style=\"text-align: center\">"

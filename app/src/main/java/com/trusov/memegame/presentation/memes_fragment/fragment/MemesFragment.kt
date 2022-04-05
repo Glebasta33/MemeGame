@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import com.trusov.memegame.App
 import com.trusov.memegame.databinding.FragmentMemesBinding
 import com.trusov.memegame.di.ViewModelFactory
+import com.trusov.memegame.presentation.memes_fragment.adapter.MemesAdapter
 import com.trusov.memegame.presentation.memes_fragment.view_model.MemesViewModel
 import javax.inject.Inject
 
@@ -27,6 +30,7 @@ class MemesFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         (activity?.application as App).component.inject(this)
+        viewModel.getMemes()
         super.onAttach(context)
     }
 
@@ -41,6 +45,14 @@ class MemesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getMemes()
+        val memesAdapter = MemesAdapter()
+        binding.rvMemes.adapter = memesAdapter
+        binding.rvMemes.layoutManager = GridLayoutManager(activity, 2)
+        viewModel.memes.observe(viewLifecycleOwner) { memes ->
+            memesAdapter.submitList(memes)
+        }
+        memesAdapter.onMemeClickListener = { meme ->
+            Toast.makeText(activity, meme.imageUrl, Toast.LENGTH_SHORT).show()
+        }
     }
 }
