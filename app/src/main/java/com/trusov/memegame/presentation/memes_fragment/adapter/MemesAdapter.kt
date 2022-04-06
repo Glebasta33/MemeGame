@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso
 import com.trusov.memegame.R
 import com.trusov.memegame.databinding.MemeRvItemBinding
 import com.trusov.memegame.domain.entity.Meme
+import kotlinx.coroutines.*
 import java.lang.Exception
 
 class MemesAdapter : ListAdapter<Meme, MemeViewHolder>(MemesDiffCallback()) {
@@ -30,14 +31,23 @@ class MemesAdapter : ListAdapter<Meme, MemeViewHolder>(MemesDiffCallback()) {
         Log.d("MemesAdapter", meme.imageUrl)
         Picasso.get().load(meme.imageUrl)
             .placeholder(R.drawable.paper_placeholder)
-            .networkPolicy(NetworkPolicy.OFFLINE)
             .into(holder.binding.ivMeme, object : Callback {
                 override fun onSuccess() {
                     Log.d("MemesAdapter", "success")
                 }
 
                 override fun onError(e: Exception?) {
-                    e?.printStackTrace()
+                    Log.d("MemesAdapter", e?.message ?: "error")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        delay(1000L)
+                        withContext(Dispatchers.Main){
+                            Picasso.get().load(meme.imageUrl)
+                                .placeholder(R.drawable.paper_placeholder)
+                                .into(holder.binding.ivMeme)
+                        }
+                    }
+                    Log.d("MemesAdapter", e?.message ?: "error")
+
                 }
 
             })

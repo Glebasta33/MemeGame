@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetRandomMemeUseCase  @Inject constructor(
     private val repository: Repository
 ){
-    suspend operator fun invoke(): Meme {
-        return repository.getRandomMeme()
+    suspend operator fun invoke(oldMeme: Meme) {
+        repository.getRandomMeme(oldMeme)
     }
 }

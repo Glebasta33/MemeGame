@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -60,6 +59,7 @@ class MemesFragment : Fragment() {
         }
         memesAdapter.onMemeClickListener = { meme ->
             controller.launchMemeFullScreenFragment(meme)
+            viewModel.getNewMeme(meme)
         }
         binding.buttonGetQuestion.setOnClickListener {
             binding.cardQuestion.isGone = false
@@ -67,6 +67,7 @@ class MemesFragment : Fragment() {
         binding.ivCloseQuestion.setOnClickListener {
             binding.cardQuestion.isGone = true
         }
+        binding.progressBar.isGone = true
 
     }
 }
