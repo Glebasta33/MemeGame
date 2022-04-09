@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "413182545586",
+    "project_id": "memegame-8bef9",
+    "storage_bucket": "memegame-8bef9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413182545586:android:9636576f408db84a9cc3ab",
+        "android_client_info": {
+          "package_name": "com.trusov.memegame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "413182545586-cuot4qn56cn6sanak10c83f2biuaa407.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrUQwQ_GIrRRJftoznGXhOWHJng-OGZfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "413182545586-cuot4qn56cn6sanak10c83f2biuaa407.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -38,7 +38,8 @@ class RepositoryImpl @Inject constructor() : Repository {
     }
 
     override suspend fun getRandomQuestion(): String {
-        TODO("Not yet implemented")
+        val randomIndex = (Math.random() * questions.size).toInt()
+        return questions[randomIndex]
     }
 
     private fun getNames(htmlCode: String): List<String> {
@@ -76,6 +77,18 @@ class RepositoryImpl @Inject constructor() : Repository {
 
     companion object {
         private val memes = mutableListOf<Meme>()
+        private val questions = listOf(
+            "Секс с моей бышей (бывшим) был поход на ...",
+            "Быть геем - это ...",
+            "Ощущения от первого секса похожи на ...",
+            "\"Чёрт меня дери\", - сказал Папа Римский, когда увидел ...",
+            "Мамочка, кажется, у меня под кроватью ...",
+            "Моя главная эротическая фантазия - это ...",
+            "На гербе Челябинска должен быть нарисован ...",
+            "То чувство, когда обрёл дзен",
+            "Под шляпой Боярского находится ...",
+            "Как выглядеть дружелюбынм и позитивным, когда внутри ...?",
+        )
 
         private const val SOURCE_URL = "https://apimeme.com/create/Criana?page="
         private const val BASE_URL = "https://apimeme.com/meme?meme="

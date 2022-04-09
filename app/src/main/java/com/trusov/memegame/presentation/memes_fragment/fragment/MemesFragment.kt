@@ -62,12 +62,16 @@ class MemesFragment : Fragment() {
             viewModel.getNewMeme(meme)
         }
         binding.buttonGetQuestion.setOnClickListener {
+            viewModel.getRandomQuestion()
             binding.cardQuestion.isGone = false
         }
         binding.ivCloseQuestion.setOnClickListener {
             binding.cardQuestion.isGone = true
         }
         binding.progressBar.isGone = true
+        viewModel.question.observe(viewLifecycleOwner) { question ->
+            binding.textView.text = question
+        }
 
     }
 }
