@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FirebaseFirestore
 import com.trusov.memegame.domain.entity.Meme
 import com.trusov.memegame.domain.repository.Repository
 import kotlinx.coroutines.CoroutineScope
@@ -20,10 +21,12 @@ import javax.inject.Inject
 class RepositoryImpl @Inject constructor() : Repository {
 
     override suspend fun getMemes(): List<Meme> {
+        val firebase = FirebaseFirestore.getInstance()
             if (memes.isEmpty()) {
                 for (i in 1..10) {
                     val meme = loadRandomMeme()
                     memes.add(meme)
+                    firebase.collection("memes").add(meme)
                 }
             }
         return memes
