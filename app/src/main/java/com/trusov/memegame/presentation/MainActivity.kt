@@ -9,6 +9,7 @@ import com.trusov.memegame.databinding.ActivityMainBinding
 import com.trusov.memegame.di.ViewModelFactory
 import com.trusov.memegame.domain.entity.Meme
 import com.trusov.memegame.domain.use_case.GetMemesUseCase
+import com.trusov.memegame.presentation.games_fragment.fragment.GamesHubFragment
 import com.trusov.memegame.presentation.meme_fullscreen_fragment.fragment.MemeFullScreenFragment
 import com.trusov.memegame.presentation.memes_fragment.fragment.MemesFragment
 import com.trusov.memegame.presentation.util.NavigationController
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity(), NavigationController {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, MemesFragment())
+            .replace(R.id.fragment_container, GamesHubFragment())
             .commit()
     }
 

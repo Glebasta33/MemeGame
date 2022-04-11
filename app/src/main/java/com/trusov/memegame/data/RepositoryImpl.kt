@@ -5,11 +5,15 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import com.google.firebase.firestore.FirebaseFirestore
+import com.trusov.memegame.domain.entity.Game
 import com.trusov.memegame.domain.entity.Meme
+import com.trusov.memegame.domain.entity.Player
 import com.trusov.memegame.domain.repository.Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -18,10 +22,11 @@ import java.net.URL
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-class RepositoryImpl @Inject constructor() : Repository {
+class RepositoryImpl @Inject constructor(
+    private val firebase: FirebaseFirestore
+) : Repository {
 
     override suspend fun getMemes(): List<Meme> {
-        val firebase = FirebaseFirestore.getInstance()
             if (memes.isEmpty()) {
                 for (i in 1..10) {
                     val meme = loadRandomMeme()
@@ -29,6 +34,12 @@ class RepositoryImpl @Inject constructor() : Repository {
                     firebase.collection("memes").add(meme)
                 }
             }
+//        firebase.collection("games").add(Game(
+//            "Title",
+//            null,
+//            0,
+//            "id"
+//        ))
         return memes
     }
 
@@ -43,6 +54,44 @@ class RepositoryImpl @Inject constructor() : Repository {
     override suspend fun getRandomQuestion(): String {
         val randomIndex = (Math.random() * questions.size).toInt()
         return questions[randomIndex]
+    }
+
+    override fun createNewGame(game: Game) {
+        firebase.collection("games").add(Game(
+            "Title",
+            null,
+            0,
+            "id"
+        ))
+    }
+
+    override fun getListOfGames(): LiveData<List<Game>> {
+        val games = ArrayList<Game>()
+        val liveData = MutableLiveData<List<Game>>()
+        firebase.collection("games").addSnapshotListener { value, error ->
+            if (value != null) {
+                games.clear()
+                for (data in value.documents) {
+                    val game = Game(
+                        title = data["title"].toString(),
+                        players = null,
+                        round = 0,
+                        id = data.id
+                    )
+                    games.add(game)
+                }
+                Log.d("RepositoryImplTag", "games ${games.toString()}")
+                liveData.value = games
+            }
+            if (error != null) {
+                Log.d("RepositoryImplTag", "error ${error.message}")
+            }
+        }
+        return liveData
+    }
+
+    override fun registerToGame(game: Game, player: Player) {
+        TODO("Not yet implemented")
     }
 
     private fun getNames(htmlCode: String): List<String> {
