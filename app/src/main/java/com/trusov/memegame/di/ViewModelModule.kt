@@ -26,5 +26,4 @@ interface ViewModelModule {
     @Binds
     fun bindGamesHubViewModel(viewModel: GamesHubViewModel): ViewModel
 
-
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/gamesHubFragment">
+
+    <fragment
+        android:id="@+id/gamesHubFragment"
+        android:name="com.trusov.memegame.presentation.games_fragment.fragment.GamesHubFragment"
+        android:label="GamesHubFragment" >
+        <action
+            android:id="@+id/action_gamesHubFragment_to_createNewGameFragment"
+            app:destination="@id/createNewGameFragment" />
+        <action
+            android:id="@+id/action_gamesHubFragment_to_memesFragment"
+            app:destination="@id/memesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/memesFragment"
+        android:name="com.trusov.memegame.presentation.memes_fragment.fragment.MemesFragment"
+        android:label="MemesFragment" >
+        <action
+            android:id="@+id/action_memesFragment_to_memeFullScreenFragment"
+            app:destination="@id/memeFullScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/memeFullScreenFragment"
+        android:name="com.trusov.memegame.presentation.meme_fullscreen_fragment.fragment.MemeFullScreenFragment"
+        android:label="MemeFullScreenFragment" />
+    <fragment
+        android:id="@+id/createNewGameFragment"
+        android:name="com.trusov.memegame.presentation.new_game_fragment.fragment.CreateNewGameFragment"
+        android:label="CreateNewGameFragment" >
+        <action
+            android:id="@+id/action_createNewGameFragment_to_memesFragment"
+            app:destination="@id/memesFragment" />
+    </fragment>
+</navigation>

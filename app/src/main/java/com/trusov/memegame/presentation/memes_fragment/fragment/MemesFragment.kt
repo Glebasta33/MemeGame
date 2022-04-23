@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.trusov.memegame.App
+import com.trusov.memegame.R
 import com.trusov.memegame.databinding.FragmentMemesBinding
 import com.trusov.memegame.di.ViewModelFactory
 import com.trusov.memegame.presentation.memes_fragment.adapter.MemesAdapter
 import com.trusov.memegame.presentation.memes_fragment.view_model.MemesViewModel
-import com.trusov.memegame.presentation.util.NavigationController
 import javax.inject.Inject
 
 class MemesFragment : Fragment() {
@@ -29,13 +30,8 @@ class MemesFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory)[MemesViewModel::class.java]
     }
 
-    private lateinit var controller: NavigationController
-
     override fun onAttach(context: Context) {
         (activity?.application as App).component.inject(this)
-        if (context is NavigationController) {
-            controller = context
-        }
         viewModel.getMemes()
         super.onAttach(context)
     }
@@ -58,7 +54,13 @@ class MemesFragment : Fragment() {
             memesAdapter.submitList(memes)
         }
         memesAdapter.onMemeClickListener = { meme ->
-            controller.launchMemeFullScreenFragment(meme)
+            val memeArg = Bundle().apply {
+                putString("MEME_URL", meme.imageUrl)
+            }
+            findNavController().navigate(
+                R.id.action_memesFragment_to_memeFullScreenFragment,
+                memeArg
+            )
             viewModel.getNewMeme(meme)
         }
         binding.buttonGetQuestion.setOnClickListener {

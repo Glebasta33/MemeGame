@@ -56,9 +56,9 @@ class RepositoryImpl @Inject constructor(
         return questions[randomIndex]
     }
 
-    override fun createNewGame(game: Game) {
+    override fun createNewGame(title: String) {
         firebase.collection("games").add(Game(
-            "Title",
+            title,
             null,
             0,
             "id"
