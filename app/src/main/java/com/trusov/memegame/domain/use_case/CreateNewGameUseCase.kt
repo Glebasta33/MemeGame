@@ -4,5 +4,5 @@ import com.trusov.memegame.domain.repository.Repository
 import javax.inject.Inject
 
 class CreateNewGameUseCase @Inject constructor(private val repository: Repository) {
-    operator fun invoke(title: String) = repository.createNewGame(title)
+    operator fun invoke(title: String, password: String) = repository.createNewGame(title, password)
 }

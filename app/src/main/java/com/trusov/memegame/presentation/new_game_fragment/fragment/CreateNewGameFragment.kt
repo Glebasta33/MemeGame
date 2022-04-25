@@ -40,20 +40,32 @@ class CreateNewGameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setListener()
+    }
+
+    private fun setListener() {
         with(binding) {
             btnCreateNewGame.setOnClickListener {
-                if (!etNameOfGame.text.isNullOrEmpty()) {
-                    val title = etNameOfGame.text.toString()
+                if (etNameOfGame.text.isNullOrEmpty()) {
+                    Toast.makeText(activity, "Введите название", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (etPasswordOfGame.text.isNullOrEmpty()) {
+                    Toast.makeText(activity, "Введите пароль", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                val title = etNameOfGame.text.toString()
+                val password = etPasswordOfGame.text.toString()
                     try {
-                        createNewGameUseCase(title)
+                        createNewGameUseCase(title, password)
+                        // TODO: добавить ключ для запуска конкретной игры в MemesFragment
                         findNavController().navigate(R.id.action_createNewGameFragment_to_memesFragment)
                     } catch (e: Exception) {
                         Log.d("CreateNewGameTest", "${e.message}")
                         e.printStackTrace()
                     }
-                } else {
-                    Toast.makeText(activity, "Введите название", Toast.LENGTH_SHORT).show()
-                }
+
+
             }
         }
     }

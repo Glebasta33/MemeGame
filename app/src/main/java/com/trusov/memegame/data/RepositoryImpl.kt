@@ -5,16 +5,13 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.trusov.memegame.domain.entity.Game
 import com.trusov.memegame.domain.entity.Meme
 import com.trusov.memegame.domain.entity.Player
 import com.trusov.memegame.domain.repository.Repository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -34,12 +31,6 @@ class RepositoryImpl @Inject constructor(
                     firebase.collection("memes").add(meme)
                 }
             }
-//        firebase.collection("games").add(Game(
-//            "Title",
-//            null,
-//            0,
-//            "id"
-//        ))
         return memes
     }
 
@@ -56,12 +47,12 @@ class RepositoryImpl @Inject constructor(
         return questions[randomIndex]
     }
 
-    override fun createNewGame(title: String) {
+    override fun createNewGame(title: String, password: String) {
         firebase.collection("games").add(Game(
             title,
             null,
             0,
-            "id"
+            password
         ))
     }
 
@@ -76,7 +67,7 @@ class RepositoryImpl @Inject constructor(
                         title = data["title"].toString(),
                         players = null,
                         round = 0,
-                        id = data.id
+                        password = data["password"].toString()
                     )
                     games.add(game)
                 }
@@ -90,8 +81,14 @@ class RepositoryImpl @Inject constructor(
         return liveData
     }
 
-    override fun registerToGame(game: Game, player: Player) {
-        TODO("Not yet implemented")
+    override suspend fun registerToGame(playerName: String, password: String) {
+        val value = firebase.collection("games").get().await()
+        val data = value.documents.findLast { it["password"] == password } ?: return
+        firebase.collection("games").document(data.id)
+            .update("players", FieldValue.arrayUnion(playerName))
+            .addOnFailureListener {
+                Log.d("RepositoryImplTag", "register error ${it.message}")
+            }
     }
 
     private fun getNames(htmlCode: String): List<String> {

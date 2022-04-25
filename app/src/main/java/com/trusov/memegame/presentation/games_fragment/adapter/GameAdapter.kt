@@ -24,7 +24,7 @@ class GameAdapter : ListAdapter<Game, GameViewHolder>(GamesDiffCallback()) {
         val game = currentList[position]
         Log.d("GameAdapter", game.title)
         holder.binding.tvGameTitle.text = game.title
-       // holder.binding.tvNumberOfPlayers = game.players?.size?.toString() ?: "0"
+        holder.binding.tvNumberOfPlayers.text = game.players?.size?.toString() ?: "0"
         holder.binding.root.setOnClickListener {
             onGameClickListener?.invoke(game)
         }

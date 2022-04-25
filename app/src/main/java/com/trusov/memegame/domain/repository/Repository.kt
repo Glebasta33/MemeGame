@@ -9,7 +9,7 @@ interface Repository {
     suspend fun getMemes(): List<Meme>
     suspend fun getRandomMeme(oldMeme: Meme)
     suspend fun getRandomQuestion(): String
-    fun createNewGame(title: String)
+    fun createNewGame(title: String, password: String)
     fun getListOfGames(): LiveData<List<Game>>
-    fun registerToGame(game: Game, player: Player)
+    suspend fun registerToGame(playerName: String, password: String)
 }

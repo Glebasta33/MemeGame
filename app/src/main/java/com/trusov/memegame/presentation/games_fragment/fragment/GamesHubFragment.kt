@@ -1,10 +1,13 @@
 package com.trusov.memegame.presentation.games_fragment.fragment
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -28,6 +31,8 @@ class GamesHubFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory)[GamesHubViewModel::class.java]
     }
 
+    private lateinit var name: String
+
     override fun onAttach(context: Context) {
         (activity?.application as App).component.inject(this)
         super.onAttach(context)
@@ -44,6 +49,9 @@ class GamesHubFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        checkName()
+
         val gameAdapter = GameAdapter()
         binding.rvGamse.adapter = gameAdapter
         viewModel.getListOfGames().observe(viewLifecycleOwner) {
@@ -52,10 +60,39 @@ class GamesHubFragment : Fragment() {
         binding.floatingActionButtonCreateNewGame.setOnClickListener {
             navigateToMemes()
         }
+        gameAdapter.onGameClickListener = {
+            binding.cardQuestion.isGone = false
+            binding.tvWelcome.text = "Введите пароль"
+            binding.buttonEnter.setOnClickListener {
+                val password = binding.etInput.text.toString()
+                viewModel.registerToGame(name, password)
+                binding.cardQuestion.isGone = true
+            }
+        }
+    }
+
+    private fun checkName() {
+        val prefs = activity?.getPreferences(MODE_PRIVATE)
+        if (prefs?.getString(PREFERENCES_NAME, null) == null) {
+            binding.cardQuestion.isGone = false
+            binding.tvWelcome.text = "Введите ваше имя"
+            binding.buttonEnter.setOnClickListener {
+                val name = binding.etInput.text.toString()
+                prefs?.edit()?.putString(PREFERENCES_NAME, name)?.apply()
+                binding.cardQuestion.isGone = true
+            }
+        } else {
+            name = prefs.getString(PREFERENCES_NAME, "") ?: "Ошибка"
+            Toast.makeText(activity, "Ваше имя: $name", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun navigateToMemes() {
         findNavController().navigate(R.id.action_gamesHubFragment_to_createNewGameFragment)
+    }
+
+    companion object {
+        private const val PREFERENCES_NAME = "NAME"
     }
 
 }

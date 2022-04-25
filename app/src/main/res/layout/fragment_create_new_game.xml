@@ -29,6 +29,31 @@
         android:inputType="text"
         android:autofillHints="name" />
 
+
+    <TextView
+        android:id="@+id/tv_new_game_password_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Придумайте пароль для входа:"
+        android:layout_marginTop="8dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_name_of_game" />
+
+    <EditText
+        android:id="@+id/et_password_of_game"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_new_game_password_label"
+        android:inputType="text"
+        android:autofillHints="name" />
+
     <Button
         android:id="@+id/btn_create_new_game"
         android:layout_width="wrap_content"
@@ -39,6 +64,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_name_of_game" />
+        app:layout_constraintTop_toBottomOf="@+id/et_password_of_game" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
