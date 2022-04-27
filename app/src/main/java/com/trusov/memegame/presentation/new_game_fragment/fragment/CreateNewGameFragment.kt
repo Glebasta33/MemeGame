@@ -58,8 +58,10 @@ class CreateNewGameFragment : Fragment() {
                 val password = etPasswordOfGame.text.toString()
                     try {
                         createNewGameUseCase(title, password)
-                        // TODO: добавить ключ для запуска конкретной игры в MemesFragment
-                        findNavController().navigate(R.id.action_createNewGameFragment_to_memesFragment)
+                        val args = Bundle().apply {
+                            putString("password", password)
+                        }
+                        findNavController().navigate(R.id.action_createNewGameFragment_to_memesFragment, args)
                     } catch (e: Exception) {
                         Log.d("CreateNewGameTest", "${e.message}")
                         e.printStackTrace()

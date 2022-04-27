@@ -57,8 +57,12 @@ class GamesHubFragment : Fragment() {
         viewModel.getListOfGames().observe(viewLifecycleOwner) {
             gameAdapter.submitList(it.toMutableList())
         }
+        setListeners(gameAdapter)
+    }
+
+    private fun setListeners(gameAdapter: GameAdapter) {
         binding.floatingActionButtonCreateNewGame.setOnClickListener {
-            navigateToMemes()
+            findNavController().navigate(R.id.action_gamesHubFragment_to_createNewGameFragment)
         }
         gameAdapter.onGameClickListener = {
             binding.cardQuestion.isGone = false
@@ -67,6 +71,17 @@ class GamesHubFragment : Fragment() {
                 val password = binding.etInput.text.toString()
                 viewModel.registerToGame(name, password)
                 binding.cardQuestion.isGone = true
+                viewModel.auth.observe(viewLifecycleOwner) {
+                    if (it) {
+                        val args = Bundle().apply {
+                            putString("password", password)
+                        }
+                        findNavController().navigate(R.id.action_gamesHubFragment_to_memesFragment, args)
+                    } else {
+                        Toast.makeText(activity, "Пароль введён неверно", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
             }
         }
     }
@@ -82,13 +97,8 @@ class GamesHubFragment : Fragment() {
                 binding.cardQuestion.isGone = true
             }
         } else {
-            name = prefs.getString(PREFERENCES_NAME, "") ?: "Ошибка"
-            Toast.makeText(activity, "Ваше имя: $name", Toast.LENGTH_SHORT).show()
+            name = prefs.getString(PREFERENCES_NAME, "") ?: ""
         }
-    }
-
-    private fun navigateToMemes() {
-        findNavController().navigate(R.id.action_gamesHubFragment_to_createNewGameFragment)
     }
 
     companion object {

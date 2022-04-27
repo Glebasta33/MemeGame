@@ -6,6 +6,6 @@ import javax.inject.Inject
 class RegisterToGameUseCase @Inject constructor(
     private val repository: Repository
 ) {
-    suspend operator fun invoke(playerName: String, password: String) =
+    suspend operator fun invoke(playerName: String, password: String): Boolean =
         repository.registerToGame(playerName, password)
 }

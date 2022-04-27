@@ -13,11 +13,16 @@ class GamesHubViewModel @Inject constructor(
     private val getListOfGamesUseCase: GetListOfGamesUseCase,
     private val registerToGameUseCase: RegisterToGameUseCase
 ) : ViewModel() {
+
+    private val _auth = MutableLiveData<Boolean>()
+    val auth: LiveData<Boolean> = _auth
+
     fun getListOfGames() = getListOfGamesUseCase()
 
     fun registerToGame(playerName: String, password: String) {
         viewModelScope.launch {
-            registerToGameUseCase(playerName, password)
+            _auth.value = registerToGameUseCase(playerName, password)!!
         }
     }
+
 }

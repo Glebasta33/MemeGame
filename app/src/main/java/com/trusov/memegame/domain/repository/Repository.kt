@@ -11,5 +11,6 @@ interface Repository {
     suspend fun getRandomQuestion(): String
     fun createNewGame(title: String, password: String)
     fun getListOfGames(): LiveData<List<Game>>
-    suspend fun registerToGame(playerName: String, password: String)
+    suspend fun registerToGame(playerName: String, password: String): Boolean
+    fun getGame(password: String): LiveData<Game?>
 }

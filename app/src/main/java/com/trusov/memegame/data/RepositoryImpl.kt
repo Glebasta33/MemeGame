@@ -9,7 +9,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.trusov.memegame.domain.entity.Game
 import com.trusov.memegame.domain.entity.Meme
-import com.trusov.memegame.domain.entity.Player
 import com.trusov.memegame.domain.repository.Repository
 import kotlinx.coroutines.tasks.await
 import java.io.BufferedReader
@@ -81,15 +80,31 @@ class RepositoryImpl @Inject constructor(
         return liveData
     }
 
-    override suspend fun registerToGame(playerName: String, password: String) {
+    override suspend fun registerToGame(playerName: String, password: String): Boolean {
         val value = firebase.collection("games").get().await()
-        val data = value.documents.findLast { it["password"] == password } ?: return
+        val data = value.documents.findLast { it["password"] == password } ?: return false
         firebase.collection("games").document(data.id)
             .update("players", FieldValue.arrayUnion(playerName))
             .addOnFailureListener {
                 Log.d("RepositoryImplTag", "register error ${it.message}")
             }
+        return true
     }
+
+    override fun getGame(password: String): LiveData<Game?> {
+        val liveData = MutableLiveData<Game?>()
+        firebase.collection("games").addSnapshotListener { value, error ->
+            val data = value?.documents?.findLast { it["password"] == password } ?: throw RuntimeException("Game not found")
+             liveData.value = Game(
+                title = data["title"]?.toString() ?: "Game not found",
+                players = null,
+                round = 0,
+                password = data["password"].toString()
+            )
+        }
+        return liveData
+    }
+
 
     private fun getNames(htmlCode: String): List<String> {
         val pattern = Pattern.compile("$PATTERN_START(.*?)$PATTERN_END")

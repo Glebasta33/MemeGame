@@ -30,10 +30,17 @@ class MemesFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory)[MemesViewModel::class.java]
     }
 
+    private lateinit var password: String
+
     override fun onAttach(context: Context) {
         (activity?.application as App).component.inject(this)
         viewModel.getMemes()
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let { password = it.getString("password") ?: "password" }
     }
 
     override fun onCreateView(
@@ -47,6 +54,9 @@ class MemesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getGame(password).observe(viewLifecycleOwner) {
+            binding.tvGameTitle.text = it?.title
+        }
         val memesAdapter = MemesAdapter()
         binding.rvMemes.adapter = memesAdapter
         binding.rvMemes.layoutManager = GridLayoutManager(activity, 2)
