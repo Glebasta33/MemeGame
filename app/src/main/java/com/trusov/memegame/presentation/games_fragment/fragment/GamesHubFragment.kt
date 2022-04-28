@@ -11,6 +11,8 @@ import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.trusov.memegame.App
 import com.trusov.memegame.R
 import com.trusov.memegame.databinding.FragmentGamesHubBinding
@@ -31,11 +33,21 @@ class GamesHubFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory)[GamesHubViewModel::class.java]
     }
 
+    @Inject
+    lateinit var auth: FirebaseAuth
+
     private lateinit var name: String
 
     override fun onAttach(context: Context) {
         (activity?.application as App).component.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (auth.currentUser == null) {
+            findNavController().navigate(R.id.action_gamesHubFragment_to_signUpFragment)
+        }
     }
 
     override fun onCreateView(

@@ -5,10 +5,12 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.trusov.memegame.domain.entity.Game
 import com.trusov.memegame.domain.entity.Meme
+import com.trusov.memegame.domain.entity.Player
 import com.trusov.memegame.domain.repository.Repository
 import kotlinx.coroutines.tasks.await
 import java.io.BufferedReader
@@ -19,7 +21,8 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
-    private val firebase: FirebaseFirestore
+    private val firebase: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : Repository {
 
     override suspend fun getMemes(): List<Meme> {
@@ -62,6 +65,10 @@ class RepositoryImpl @Inject constructor(
             if (value != null) {
                 games.clear()
                 for (data in value.documents) {
+                    val players = mutableListOf<Player>()
+                    val playerNames = data["players"] as ArrayList<String>
+                    Log.d(LOG_TAG, "payers: $playerNames")
+
                     val game = Game(
                         title = data["title"].toString(),
                         players = null,
@@ -70,11 +77,10 @@ class RepositoryImpl @Inject constructor(
                     )
                     games.add(game)
                 }
-                Log.d("RepositoryImplTag", "games ${games.toString()}")
                 liveData.value = games
             }
             if (error != null) {
-                Log.d("RepositoryImplTag", "error ${error.message}")
+                Log.d(LOG_TAG, "error ${error.message}")
             }
         }
         return liveData
@@ -86,7 +92,7 @@ class RepositoryImpl @Inject constructor(
         firebase.collection("games").document(data.id)
             .update("players", FieldValue.arrayUnion(playerName))
             .addOnFailureListener {
-                Log.d("RepositoryImplTag", "register error ${it.message}")
+                Log.d(LOG_TAG, "register error ${it.message}")
             }
         return true
     }
@@ -103,6 +109,27 @@ class RepositoryImpl @Inject constructor(
             )
         }
         return liveData
+    }
+
+    override fun singUp(name: String, login: String, password: String) {
+        auth.createUserWithEmailAndPassword(login, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val respondent = auth.currentUser
+                    firebase.collection("players").add(
+                        Player(
+                            name = name,
+                            score = 0,
+                            id = respondent?.uid ?: "id",
+                            currentGameId = "id"
+                        )
+                    )
+                    Log.d(LOG_TAG, "singUp success: $respondent")
+                } else {
+                    Log.d(LOG_TAG, "singUp error: ${task.exception}")
+                }
+            }
+
     }
 
 
@@ -131,6 +158,7 @@ class RepositoryImpl @Inject constructor(
     }
 
     private suspend fun loadRandomMeme(): Meme {
+        // TODO: withContext
         val randomPage = (Math.random() * 28).toInt() + 1
         val html = getHtmlCode(randomPage)
         val names = getNames(html)
@@ -140,6 +168,8 @@ class RepositoryImpl @Inject constructor(
 
 
     companion object {
+        private const val LOG_TAG = "RepositoryImplTag"
+
         private val memes = mutableListOf<Meme>()
         private val questions = listOf(
             "Секс с моей бышей (бывшим) был поход на ...",

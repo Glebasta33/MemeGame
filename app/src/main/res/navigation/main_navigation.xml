@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
     app:startDestination="@id/gamesHubFragment">
 
@@ -14,6 +15,9 @@
         <action
             android:id="@+id/action_gamesHubFragment_to_memesFragment"
             app:destination="@id/memesFragment" />
+        <action
+            android:id="@+id/action_gamesHubFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/memesFragment"
@@ -34,5 +38,14 @@
         <action
             android:id="@+id/action_createNewGameFragment_to_memesFragment"
             app:destination="@id/memesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.trusov.memegame.presentation.sign_up_fragment.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_gamesHubFragment"
+            app:destination="@id/gamesHubFragment" />
     </fragment>
 </navigation>
