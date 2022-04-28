@@ -65,10 +65,6 @@ class RepositoryImpl @Inject constructor(
             if (value != null) {
                 games.clear()
                 for (data in value.documents) {
-                    val players = mutableListOf<Player>()
-                    val playerNames = data["players"] as ArrayList<String>
-                    Log.d(LOG_TAG, "payers: $playerNames")
-
                     val game = Game(
                         title = data["title"].toString(),
                         players = null,
