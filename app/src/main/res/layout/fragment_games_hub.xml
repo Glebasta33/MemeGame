@@ -45,6 +45,15 @@
             android:layout_height="match_parent"
             android:layout_margin="12dp">
 
+            <ImageView
+                android:id="@+id/iv_close_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:src="@drawable/ic_close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/tv_welcome"
                 android:layout_width="wrap_content"

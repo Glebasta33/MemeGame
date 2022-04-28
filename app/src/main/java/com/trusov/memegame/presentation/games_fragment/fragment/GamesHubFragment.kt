@@ -96,6 +96,9 @@ class GamesHubFragment : Fragment() {
 
             }
         }
+        binding.ivCloseQuestion.setOnClickListener {
+            binding.cardQuestion.isGone = true
+        }
     }
 
     private fun checkName() {
