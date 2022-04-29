@@ -4,7 +4,8 @@ data class Game(
     val title: String,
     val players: List<Player>?,
     var round: Int,
-    var password: String
+    var password: String,
+    val id: String = "id"
 ) {
     fun checkWinner(): Player? {
         val winner = players?.find{it.score >= 10}

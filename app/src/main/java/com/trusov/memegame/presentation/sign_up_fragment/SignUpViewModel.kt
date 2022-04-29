@@ -11,27 +11,22 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SignUpViewModel @Inject constructor(
-    private val signUpUseCase: SignUpUseCase,
-    private val auth: FirebaseAuth
+    private val signUpUseCase: SignUpUseCase
 ) : ViewModel() {
 
     private val _state = MutableLiveData<SignUpState>()
     val state: LiveData<SignUpState> = _state
 
     fun signUp(name: String, email: String, password1: String, password2: String) {
-        viewModelScope.launch {
-            _state.value = Loading
-            if (!checkInputs(name, email, password1, password2)) return@launch
-            if (!checkPasswords(password1, password2)) return@launch
-            signUpUseCase(name, email, password1)
-            _state.value = Success
-        }
-
+        if (!checkInputs(name, email, password1, password2)) return
+        if (!checkPasswords(password1, password2)) return
+        _state.value = Success
+        signUpUseCase(name, email, password1)
     }
 
     private fun checkInputs(vararg inputs: String): Boolean {
         for (input in inputs) {
-            if(input.isEmpty()) {
+            if (input.isEmpty()) {
                 _state.value = Error("Заполните все поля")
                 return false
             }

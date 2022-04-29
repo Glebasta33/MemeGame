@@ -36,8 +36,6 @@ class GamesHubFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
 
-    private lateinit var name: String
-
     override fun onAttach(context: Context) {
         (activity?.application as App).component.inject(this)
         super.onAttach(context)
@@ -62,8 +60,6 @@ class GamesHubFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        checkName()
-
         val gameAdapter = GameAdapter()
         binding.rvGamse.adapter = gameAdapter
         viewModel.getListOfGames().observe(viewLifecycleOwner) {
@@ -81,7 +77,7 @@ class GamesHubFragment : Fragment() {
             binding.tvWelcome.text = "Введите пароль"
             binding.buttonEnter.setOnClickListener {
                 val password = binding.etInput.text.toString()
-                viewModel.registerToGame(name, password)
+                viewModel.registerToGame(auth.currentUser?.uid ?: "null", password)
                 binding.cardQuestion.isGone = true
                 viewModel.auth.observe(viewLifecycleOwner) {
                     if (it) {
@@ -101,20 +97,20 @@ class GamesHubFragment : Fragment() {
         }
     }
 
-    private fun checkName() {
-        val prefs = activity?.getPreferences(MODE_PRIVATE)
-        if (prefs?.getString(PREFERENCES_NAME, null) == null) {
-            binding.cardQuestion.isGone = false
-            binding.tvWelcome.text = "Введите ваше имя"
-            binding.buttonEnter.setOnClickListener {
-                val name = binding.etInput.text.toString()
-                prefs?.edit()?.putString(PREFERENCES_NAME, name)?.apply()
-                binding.cardQuestion.isGone = true
-            }
-        } else {
-            name = prefs.getString(PREFERENCES_NAME, "") ?: ""
-        }
-    }
+//    private fun checkName() {
+//        val prefs = activity?.getPreferences(MODE_PRIVATE)
+//        if (prefs?.getString(PREFERENCES_NAME, null) == null) {
+//            binding.cardQuestion.isGone = false
+//            binding.tvWelcome.text = "Введите ваше имя"
+//            binding.buttonEnter.setOnClickListener {
+//                val name = binding.etInput.text.toString()
+//                prefs?.edit()?.putString(PREFERENCES_NAME, name)?.apply()
+//                binding.cardQuestion.isGone = true
+//            }
+//        } else {
+//            name = prefs.getString(PREFERENCES_NAME, "") ?: ""
+//        }
+//    }
 
     companion object {
         private const val PREFERENCES_NAME = "NAME"

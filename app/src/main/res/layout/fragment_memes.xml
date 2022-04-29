@@ -33,6 +33,11 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Title of Game" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_players"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

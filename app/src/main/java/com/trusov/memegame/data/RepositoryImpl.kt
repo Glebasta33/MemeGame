@@ -26,13 +26,13 @@ class RepositoryImpl @Inject constructor(
 ) : Repository {
 
     override suspend fun getMemes(): List<Meme> {
-            if (memes.isEmpty()) {
-                for (i in 1..10) {
-                    val meme = loadRandomMeme()
-                    memes.add(meme)
-                    firebase.collection("memes").add(meme)
-                }
+        if (memes.isEmpty()) {
+            for (i in 1..10) {
+                val meme = loadRandomMeme()
+                memes.add(meme)
+                firebase.collection("memes").add(meme)
             }
+        }
         return memes
     }
 
@@ -50,12 +50,14 @@ class RepositoryImpl @Inject constructor(
     }
 
     override fun createNewGame(title: String, password: String) {
-        firebase.collection("games").add(Game(
-            title,
-            null,
-            0,
-            password
-        ))
+        firebase.collection("games").add(
+            Game(
+                title,
+                null,
+                0,
+                password
+            )
+        )
     }
 
     override fun getListOfGames(): LiveData<List<Game>> {
@@ -82,13 +84,21 @@ class RepositoryImpl @Inject constructor(
         return liveData
     }
 
-    override suspend fun registerToGame(playerName: String, password: String): Boolean {
-        val value = firebase.collection("games").get().await()
-        val data = value.documents.findLast { it["password"] == password } ?: return false
-        firebase.collection("games").document(data.id)
-            .update("players", FieldValue.arrayUnion(playerName))
+    override suspend fun registerToGame(playerId: String, password: String): Boolean {
+        val valueGame = firebase.collection("games").get().await()
+        val docGame = valueGame.documents.findLast { it["password"] == password } ?: return false
+        firebase.collection("games").document(docGame.id)
+            .update("players", FieldValue.arrayUnion(playerId))
             .addOnFailureListener {
                 Log.d(LOG_TAG, "register error ${it.message}")
+            }
+        val valuePlayer = firebase.collection("players").get().await()
+        val docPlayer = valuePlayer.documents.find { it["id"] == playerId }
+        Log.d(LOG_TAG, "playerId $playerId")
+        firebase.collection("players").document(docPlayer?.id ?: "id")
+            .update("currentGameId", docGame.id)
+            .addOnFailureListener {
+                Log.d(LOG_TAG, "register currentGameId error ${it.message}")
             }
         return true
     }
@@ -96,12 +106,16 @@ class RepositoryImpl @Inject constructor(
     override fun getGame(password: String): LiveData<Game?> {
         val liveData = MutableLiveData<Game?>()
         firebase.collection("games").addSnapshotListener { value, error ->
-            val data = value?.documents?.findLast { it["password"] == password } ?: throw RuntimeException("Game not found")
-             liveData.value = Game(
+            val data =
+                value?.documents?.findLast { it["password"] == password } ?: throw RuntimeException(
+                    "Game not found"
+                )
+            liveData.value = Game(
                 title = data["title"]?.toString() ?: "Game not found",
                 players = null,
                 round = 0,
-                password = data["password"].toString()
+                password = data["password"].toString(),
+                id = data.id
             )
         }
         return liveData
@@ -126,6 +140,26 @@ class RepositoryImpl @Inject constructor(
                 }
             }
 
+    }
+
+    override fun getPlayers(gameId: String): LiveData<List<Player>> {
+        val liveData = MutableLiveData<List<Player>>()
+        firebase.collection("players").addSnapshotListener { value, error ->
+            value?.let {
+                val docs = it.documents.filter { it["currentGameId"] == gameId }
+                val playersList = mutableListOf<Player>()
+                for (doc in docs) {
+                    playersList.add(
+                        Player(
+                            name = doc["name"].toString(),
+                            score = doc["score"].toString().toInt()
+                        )
+                    )
+                }
+                liveData.value = playersList
+            }
+        }
+        return liveData
     }
 
 

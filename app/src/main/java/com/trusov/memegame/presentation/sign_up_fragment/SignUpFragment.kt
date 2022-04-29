@@ -2,6 +2,7 @@ package com.trusov.memegame.presentation.sign_up_fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -57,20 +58,14 @@ class SignUpFragment : Fragment() {
             }
         }
         viewModel.state.observe(viewLifecycleOwner) { state ->
-            with(binding) {
-                buttonSignUp.isEnabled = true
-                progress.isGone = true
-                when(state) {
-                    is Loading -> {
-                        buttonSignUp.isEnabled = false
-                        progress.isGone = false
-                    }
-                    is Error -> {
-                        Toast.makeText(activity, state.message, Toast.LENGTH_SHORT).show()
-                    }
-                    is Success -> {
-                        findNavController().navigate(R.id.action_signUpFragment_to_gamesHubFragment)
-                    }
+            Log.d("SignUpFragment", "Observe")
+            when (state) {
+                is Error -> {
+                    Toast.makeText(activity, state.message, Toast.LENGTH_SHORT).show()
+                }
+                is Success -> {
+                Log.d("SignUpFragment", "Success")
+                    findNavController().navigate(R.id.action_signUpFragment_to_gamesHubFragment)
                 }
             }
 

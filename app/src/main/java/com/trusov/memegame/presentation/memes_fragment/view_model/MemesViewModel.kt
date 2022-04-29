@@ -14,7 +14,8 @@ class MemesViewModel @Inject constructor(
     private val getMemesUseCase: GetMemesUseCase,
     private val getRandomMemeUseCase: GetRandomMemeUseCase,
     private val getRandomQuestionUseCase: GetRandomQuestionUseCase,
-    private val getGameUseCase: GetGameUseCase
+    private val getGameUseCase: GetGameUseCase,
+    private val getPlayersUseCase: GetPlayersUseCase
 ) : ViewModel() {
 
     private var _memes = MutableLiveData<List<Meme>>()
@@ -43,4 +44,6 @@ class MemesViewModel @Inject constructor(
     }
 
     fun getGame(password: String) = getGameUseCase(password)
+
+    fun getPlayers(gameId: String) = getPlayersUseCase(gameId)
 }
