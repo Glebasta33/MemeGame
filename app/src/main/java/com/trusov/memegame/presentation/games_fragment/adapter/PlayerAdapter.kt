@@ -1,14 +1,19 @@
 package com.trusov.memegame.presentation.games_fragment.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.trusov.memegame.R
 import com.trusov.memegame.databinding.RvItemPlayerBinding
 import com.trusov.memegame.domain.entity.Player
+import javax.inject.Inject
 
-class PlayerAdapter : RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
+class PlayerAdapter @Inject constructor(
+    private val auth: FirebaseAuth
+) : RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
 
     val players = mutableListOf<Player>()
 
@@ -17,7 +22,12 @@ class PlayerAdapter : RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_item_player, parent, false)
+        val layout = when(viewType){
+            OWNER_LAYOUT -> R.layout.rv_item_player_device_owner
+            NOT_OWNER_LAYOUT -> R.layout.rv_item_player
+            else -> throw RuntimeException("Unknown viewType")
+        }
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return PlayerViewHolder(view)
     }
 
@@ -29,7 +39,22 @@ class PlayerAdapter : RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        Log.d("PlayerAdapter", "auth.currentUser?.uid: ${auth.currentUser?.uid}")
+        Log.d("PlayerAdapter", "players[position].id: ${players[position].id}")
+        return if (players[position].id == auth.currentUser?.uid) {
+            OWNER_LAYOUT
+        } else {
+            NOT_OWNER_LAYOUT
+        }
+    }
+
     override fun getItemCount(): Int {
         return players.size
+    }
+
+    companion object {
+        private const val OWNER_LAYOUT = 200
+        private const val NOT_OWNER_LAYOUT = 400
     }
 }

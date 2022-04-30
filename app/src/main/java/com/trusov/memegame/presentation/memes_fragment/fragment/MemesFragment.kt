@@ -33,6 +33,8 @@ class MemesFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[MemesViewModel::class.java]
     }
+    @Inject
+    lateinit var playerAdapter: PlayerAdapter
 
     private lateinit var password: String
 
@@ -59,12 +61,10 @@ class MemesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val playerAdapter = PlayerAdapter()
         binding.rvPlayers.adapter = playerAdapter
         binding.rvPlayers.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         viewModel.getGame(password).observe(viewLifecycleOwner) { game ->
             game?.let {
-                binding.tvGameTitle.text = game.title
                 viewModel.getPlayers(game.id).observe(viewLifecycleOwner) {
                     playerAdapter.players.clear()
                     playerAdapter.players.addAll(it.toMutableList())

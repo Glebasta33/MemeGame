@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="A"
         android:gravity="center"
-        android:background="@drawable/rounded_rectangle_blue"/>
+        android:background="@drawable/rounded_rectangle_red"/>
 
     <TextView
         android:id="@+id/tv_score"

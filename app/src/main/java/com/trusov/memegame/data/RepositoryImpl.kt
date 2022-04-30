@@ -152,7 +152,8 @@ class RepositoryImpl @Inject constructor(
                     playersList.add(
                         Player(
                             name = doc["name"].toString(),
-                            score = doc["score"].toString().toInt()
+                            score = doc["score"].toString().toInt(),
+                            id = doc["id"].toString()
                         )
                     )
                 }
