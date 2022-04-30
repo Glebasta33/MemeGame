@@ -77,6 +77,7 @@ class GamesHubFragment : Fragment() {
             binding.tvWelcome.text = "Введите пароль"
             binding.buttonEnter.setOnClickListener {
                 val password = binding.etInput.text.toString()
+                binding.etInput.text.clear()
                 viewModel.registerToGame(auth.currentUser?.uid ?: "null", password)
                 binding.cardQuestion.isGone = true
                 viewModel.auth.observe(viewLifecycleOwner) {
