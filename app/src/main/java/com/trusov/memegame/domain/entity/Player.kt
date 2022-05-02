@@ -5,5 +5,6 @@ data class Player(
         var score: Int = 0,
         var id: String = "id",
         var currentGameId: String = "id",
-        var host: Int = 0
+        var host: Int = 0,
+        var chosenMemeUrl: String? = null
 )

@@ -16,4 +16,5 @@ interface Repository {
     fun singUp(name: String, login: String, password: String)
     fun getPlayers(gameId: String): LiveData<List<Player>>
     suspend fun nextRound()
+    suspend fun chooseMeme(imageUrl: String)
 }

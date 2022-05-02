@@ -155,7 +155,8 @@ class RepositoryImpl @Inject constructor(
                             name = doc["name"].toString(),
                             score = doc["score"].toString().toInt(),
                             id = doc["id"].toString(),
-                            host = doc["host"].toString().toInt()
+                            host = doc["host"].toString().toInt(),
+                            chosenMemeUrl = doc["chosenMemeUrl"]?.toString()
                         )
                     )
                 }
@@ -174,7 +175,8 @@ class RepositoryImpl @Inject constructor(
                     name = doc["name"].toString(),
                     score = doc["score"].toString().toInt(),
                     id = doc.id,
-                    host = doc["host"].toString().toInt()
+                    host = doc["host"].toString().toInt(),
+                    chosenMemeUrl = doc["chosenMemeUrl"]?.toString()
             )
             )
         }
@@ -198,6 +200,13 @@ class RepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun chooseMeme(imageUrl: String) {
+        val doc = firebase.collection("players")
+            .get().await().documents.find { it["id"] == auth.uid}
+        firebase.collection("players").document(doc?.id ?: "")
+            .update("chosenMemeUrl", imageUrl)
+
+    }
 
 
     private fun getNames(htmlCode: String): List<String> {

@@ -39,6 +39,7 @@ class PlayerAdapter @Inject constructor(
             tvScore.text = player.score.toString()
             Log.d("PlayerAdapter", "player.isHost: ${player.host}")
             tvQuestionMark.isGone = player.host != 1
+            ivCard.isGone = player.chosenMemeUrl == null
         }
     }
 

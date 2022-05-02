@@ -27,7 +27,6 @@ class MemesViewModel @Inject constructor(
         Log.d("MemesViewModel", "$throwable.message")
     }
     private val scope = CoroutineScope(Dispatchers.IO + exceptionHandler)
-
     fun getMemes() {
         scope.launch {
             _memes.postValue(getMemesUseCase()!!)
@@ -35,12 +34,11 @@ class MemesViewModel @Inject constructor(
     }
 
     fun getNewMeme(oldMeme: Meme) {
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch {
             getRandomMemeUseCase(oldMeme)
         }
         getMemes()
     }
-
     fun getRandomQuestion() {
         scope.launch {
             _question.postValue(getRandomQuestionUseCase()!!)
@@ -48,11 +46,9 @@ class MemesViewModel @Inject constructor(
     }
 
     fun getGame(password: String) = getGameUseCase(password)
-
     fun getPlayers(gameId: String) = getPlayersUseCase(gameId)
-
     fun nextRound() {
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch {
             nextRoundUseCase()
         }
     }
@@ -62,3 +58,4 @@ class MemesViewModel @Inject constructor(
         scope.cancel()
     }
 }
+

@@ -48,6 +48,7 @@ class MemeFullScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Picasso.get().load(memeUrl).into(binding.ivMemeFullscreen)
+        viewModel.chooseMeme(memeUrl)
     }
 
     companion object {
