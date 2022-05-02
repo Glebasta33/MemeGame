@@ -71,7 +71,8 @@ class RepositoryImpl @Inject constructor(
                         title = data["title"].toString(),
                         players = null,
                         round = 0,
-                        password = data["password"].toString()
+                        password = data["password"].toString(),
+                        id = data.id
                     )
                     games.add(game)
                 }
@@ -153,7 +154,8 @@ class RepositoryImpl @Inject constructor(
                         Player(
                             name = doc["name"].toString(),
                             score = doc["score"].toString().toInt(),
-                            id = doc["id"].toString()
+                            id = doc["id"].toString(),
+                            host = doc["host"].toString().toInt()
                         )
                     )
                 }
@@ -162,6 +164,40 @@ class RepositoryImpl @Inject constructor(
         }
         return liveData
     }
+
+    override suspend fun nextRound() {
+        val players = mutableListOf<Player>()
+        val playersCollection = firebase.collection("players").get().await()
+        for (doc in playersCollection.documents) {
+            players.add(
+                Player(
+                    name = doc["name"].toString(),
+                    score = doc["score"].toString().toInt(),
+                    id = doc.id,
+                    host = doc["host"].toString().toInt()
+            )
+            )
+        }
+        val currentHost = players.find { it.host == 1}
+        val indexOfHost: Int = players.indexOf(currentHost)
+        Log.d(LOG_TAG, "indexOfHost: $indexOfHost")
+        var indexOfNextHost = 0
+        if (indexOfHost < players.size - 1 ) {
+            Log.d(LOG_TAG, "players.size: ${players.size}")
+            indexOfNextHost = indexOfHost + 1
+        }
+        Log.d(LOG_TAG, "indexOfNextHost: $indexOfNextHost")
+        val nextHost = players[indexOfNextHost]
+
+        Log.d(LOG_TAG, "currentHost: $currentHost")
+        Log.d(LOG_TAG, "nextHost: $nextHost")
+        firebase.collection("players").document(currentHost?.id ?: "")
+            .update("host", 0)
+        firebase.collection("players").document(nextHost.id)
+            .update("host", 1)
+
+    }
+
 
 
     private fun getNames(htmlCode: String): List<String> {

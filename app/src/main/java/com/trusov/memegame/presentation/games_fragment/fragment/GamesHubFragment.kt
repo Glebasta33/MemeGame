@@ -3,6 +3,7 @@ package com.trusov.memegame.presentation.games_fragment.fragment
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ class GamesHubFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("GamesHubFragment", auth.currentUser.toString())
         if (auth.currentUser == null) {
             findNavController().navigate(R.id.action_gamesHubFragment_to_signUpFragment)
         }

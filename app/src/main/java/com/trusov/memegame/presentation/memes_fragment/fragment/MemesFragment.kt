@@ -2,7 +2,6 @@ package com.trusov.memegame.presentation.memes_fragment.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,7 @@ import com.trusov.memegame.App
 import com.trusov.memegame.R
 import com.trusov.memegame.databinding.FragmentMemesBinding
 import com.trusov.memegame.di.ViewModelFactory
-import com.trusov.memegame.domain.entity.Player
-import com.trusov.memegame.presentation.games_fragment.adapter.PlayerAdapter
+import com.trusov.memegame.presentation.memes_fragment.adapter.PlayerAdapter
 import com.trusov.memegame.presentation.memes_fragment.adapter.MemesAdapter
 import com.trusov.memegame.presentation.memes_fragment.view_model.MemesViewModel
 import javax.inject.Inject
@@ -91,6 +89,7 @@ class MemesFragment : Fragment() {
             viewModel.getNewMeme(meme)
         }
         binding.buttonGetQuestion.setOnClickListener {
+            viewModel.nextRound()
             viewModel.getRandomQuestion()
             binding.cardQuestion.isGone = false
         }

@@ -12,7 +12,8 @@ interface Repository {
     fun createNewGame(title: String, password: String)
     fun getListOfGames(): LiveData<List<Game>>
     suspend fun registerToGame(playerId: String, password: String): Boolean
-    fun getGame(password: String): LiveData<Game?>
+    fun getGame(password: String): LiveData<Game?> // TODO: add id as 2nd param
     fun singUp(name: String, login: String, password: String)
     fun getPlayers(gameId: String): LiveData<List<Player>>
+    suspend fun nextRound()
 }

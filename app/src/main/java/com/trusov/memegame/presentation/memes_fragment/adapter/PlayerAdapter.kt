@@ -1,9 +1,10 @@
-package com.trusov.memegame.presentation.games_fragment.adapter
+package com.trusov.memegame.presentation.memes_fragment.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.trusov.memegame.R
@@ -36,12 +37,12 @@ class PlayerAdapter @Inject constructor(
         with(holder.binding) {
             tvName.text = player.name.first().toString()
             tvScore.text = player.score.toString()
+            Log.d("PlayerAdapter", "player.isHost: ${player.host}")
+            tvQuestionMark.isGone = player.host != 1
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        Log.d("PlayerAdapter", "auth.currentUser?.uid: ${auth.currentUser?.uid}")
-        Log.d("PlayerAdapter", "players[position].id: ${players[position].id}")
         return if (players[position].id == auth.currentUser?.uid) {
             OWNER_LAYOUT
         } else {
