@@ -197,6 +197,10 @@ class RepositoryImpl @Inject constructor(
             .update("host", 0)
         firebase.collection("players").document(nextHost.id)
             .update("host", 1)
+        for (player in players) {
+            firebase.collection("players").document(player.id)
+                .update("chosenMemeUrl", null)
+        }
 
     }
 
