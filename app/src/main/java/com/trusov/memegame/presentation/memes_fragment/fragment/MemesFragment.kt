@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.trusov.memegame.App
 import com.trusov.memegame.R
 import com.trusov.memegame.databinding.FragmentMemesBinding
@@ -33,8 +34,11 @@ class MemesFragment : Fragment() {
     }
     @Inject
     lateinit var playerAdapter: PlayerAdapter
+    @Inject
+    lateinit var auth: FirebaseAuth
 
     private lateinit var password: String
+    private lateinit var gameId: String
 
     override fun onAttach(context: Context) {
         (activity?.application as App).component.inject(this)
@@ -63,10 +67,13 @@ class MemesFragment : Fragment() {
         binding.rvPlayers.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         viewModel.getGame(password).observe(viewLifecycleOwner) { game ->
             game?.let {
-                viewModel.getPlayers(game.id).observe(viewLifecycleOwner) {
+                gameId = game.id
+                viewModel.getPlayers(game.id).observe(viewLifecycleOwner) { players ->
                     playerAdapter.players.clear()
-                    playerAdapter.players.addAll(it.toMutableList())
+                    playerAdapter.players.addAll(players.toMutableList())
                     playerAdapter.notifyDataSetChanged()
+                    binding.floatingActionButtonShowQuestion.isGone =
+                        players.find { it.id == auth.currentUser?.uid}?.host != 1
                 }
 
             }
@@ -88,17 +95,22 @@ class MemesFragment : Fragment() {
             )
             viewModel.getNewMeme(meme)
         }
-        binding.buttonGetQuestion.setOnClickListener {
+        binding.buttonNextRound.setOnClickListener {
             viewModel.nextRound()
+        }
+        binding.floatingActionButtonShowQuestion.setOnClickListener {
             viewModel.getRandomQuestion()
             binding.cardQuestion.isGone = false
+            binding.floatingActionButtonShowQuestion.isGone = true
         }
         binding.ivCloseQuestion.setOnClickListener {
             binding.cardQuestion.isGone = true
         }
         binding.progressBar.isGone = true
         viewModel.question.observe(viewLifecycleOwner) { question ->
-            binding.textView.text = question
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.players_table_fragment_container, PlayersTableFragment.getInstance(gameId))
+                .commit()
         }
 
     }
