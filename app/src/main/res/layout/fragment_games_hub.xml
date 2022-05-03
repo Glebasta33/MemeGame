@@ -19,10 +19,11 @@
         android:layout_margin="20dp"
         android:backgroundTint="@color/paper"
         android:clickable="true"
+        android:focusable="true"
+        app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_add_24"
-        android:focusable="true" />
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_question"

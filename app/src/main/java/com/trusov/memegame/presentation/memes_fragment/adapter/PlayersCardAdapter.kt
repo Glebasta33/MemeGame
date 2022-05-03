@@ -10,11 +10,12 @@ import com.squareup.picasso.Picasso
 import com.trusov.memegame.R
 import com.trusov.memegame.databinding.RvItemMemeCardBinding
 import com.trusov.memegame.domain.entity.Meme
+import com.trusov.memegame.domain.entity.Player
 import kotlinx.coroutines.*
 
-class MemeCardAdapter : ListAdapter<Meme, MemeCardAdapter.MemeCardViewHolder>(MemesDiffCallback()) {
+class PlayersCardAdapter : ListAdapter<Player, PlayersCardAdapter.MemeCardViewHolder>(PlayersCardDiffCallback()) {
 
-    var onMemeClickListener: ((Meme) -> Unit)? = null
+    var onMemeClickListener: ((Player) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemeCardViewHolder {
         val binding = RvItemMemeCardBinding.inflate(
@@ -26,31 +27,28 @@ class MemeCardAdapter : ListAdapter<Meme, MemeCardAdapter.MemeCardViewHolder>(Me
     }
 
     override fun onBindViewHolder(holder: MemeCardViewHolder, position: Int) {
-        val meme = currentList[position]
-        Picasso.get().load(meme.imageUrl)
+        val player = currentList[position]
+        Picasso.get().load(player.chosenMemeUrl)
             .placeholder(R.drawable.paper_placeholder)
             .into(holder.binding.ivMeme, object : Callback {
                 override fun onSuccess() {
                     Log.d("MemesAdapter", "success")
                 }
-
                 override fun onError(e: Exception?) {
                     Log.d("MemesAdapter", e?.message ?: "error")
                     CoroutineScope(Dispatchers.IO).launch {
                         delay(1000L)
                         withContext(Dispatchers.Main) {
-                            Picasso.get().load(meme.imageUrl)
+                            Picasso.get().load(player.chosenMemeUrl)
                                 .placeholder(R.drawable.paper_placeholder)
                                 .into(holder.binding.ivMeme)
                         }
                     }
                     Log.d("MemesAdapter", e?.message ?: "error")
-
                 }
-
             })
         holder.binding.root.setOnClickListener {
-            onMemeClickListener?.invoke(meme)
+            onMemeClickListener?.invoke(player)
         }
     }
 

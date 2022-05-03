@@ -42,7 +42,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_question"
         android:layout_width="360dp"
-        android:layout_height="360dp"
+        android:layout_height="wrap_content"
         android:backgroundTint="@color/paper"
         android:clickable="true"
         android:focusable="true"
@@ -57,7 +57,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/iv_close_question"
@@ -72,8 +72,12 @@
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/players_table_fragment_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp" />
+                android:layout_height="210dp"
+                android:layout_margin="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -112,9 +116,10 @@
         android:backgroundTint="@color/paper"
         android:clickable="true"
         android:visibility="gone"
+        app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/card"
+        app:srcCompat="@drawable/ic_baseline_receipt_24"
         android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

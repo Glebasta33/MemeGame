@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -32,8 +33,10 @@ class MemesFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[MemesViewModel::class.java]
     }
+
     @Inject
     lateinit var playerAdapter: PlayerAdapter
+
     @Inject
     lateinit var auth: FirebaseAuth
 
@@ -64,7 +67,8 @@ class MemesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.rvPlayers.adapter = playerAdapter
-        binding.rvPlayers.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvPlayers.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         viewModel.getGame(password).observe(viewLifecycleOwner) { game ->
             game?.let {
                 gameId = game.id
@@ -72,8 +76,16 @@ class MemesFragment : Fragment() {
                     playerAdapter.players.clear()
                     playerAdapter.players.addAll(players.toMutableList())
                     playerAdapter.notifyDataSetChanged()
-                    binding.floatingActionButtonShowQuestion.isGone =
-                        players.find { it.id == auth.currentUser?.uid}?.host != 1
+                    val isNotHost = players.find { it.id == auth.currentUser?.uid }?.host != 1
+                    binding.floatingActionButtonShowQuestion.isGone = isNotHost
+                    if (!isNotHost) {
+                        Toast.makeText(
+                            activity,
+                            "Вы ведуший! Выберите самый смешной ответ на вопрос",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
                 }
 
             }
@@ -109,7 +121,10 @@ class MemesFragment : Fragment() {
         binding.progressBar.isGone = true
         viewModel.question.observe(viewLifecycleOwner) { question ->
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.players_table_fragment_container, PlayersTableFragment.getInstance(gameId))
+                .replace(
+                    R.id.players_table_fragment_container,
+                    PlayersTableFragment.getInstance(gameId)
+                )
                 .commit()
         }
 

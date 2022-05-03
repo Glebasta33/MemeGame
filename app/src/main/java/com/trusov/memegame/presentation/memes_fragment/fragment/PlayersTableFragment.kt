@@ -9,12 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trusov.memegame.App
-import com.trusov.memegame.R
 import com.trusov.memegame.databinding.PlayersTableFragmentBinding
 import com.trusov.memegame.di.ViewModelFactory
 import com.trusov.memegame.domain.entity.Meme
-import com.trusov.memegame.presentation.memes_fragment.adapter.MemeCardAdapter
-import com.trusov.memegame.presentation.memes_fragment.adapter.MemesAdapter
+import com.trusov.memegame.presentation.memes_fragment.adapter.PlayersCardAdapter
 import javax.inject.Inject
 
 class PlayersTableFragment : Fragment() {
@@ -49,7 +47,7 @@ class PlayersTableFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.tvQuestion.text = "Текст вопроса "
-        val memesAdapter = MemeCardAdapter()
+        val memesAdapter = PlayersCardAdapter()
         binding.rvCardsOnTable.adapter = memesAdapter
         binding.rvCardsOnTable.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
@@ -58,12 +56,8 @@ class PlayersTableFragment : Fragment() {
             val gameId = arguments.getString(GAME_ID) ?: ""
             viewModel.getPlayers(gameId).observe(viewLifecycleOwner) { players ->
                 if (players.find { it.chosenMemeUrl == null } == null) {
-                    val memes = mutableListOf<Meme>()
-                    players.forEach { player ->
-                        memes.add(Meme(player.chosenMemeUrl!!))
-                    }
-                    memes.shuffle()
-                    memesAdapter.submitList(memes)
+                    players.toMutableList().shuffle()
+                    memesAdapter.submitList(players)
                 }
             }
         }
