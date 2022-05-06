@@ -17,4 +17,5 @@ interface Repository {
     fun getPlayers(gameId: String): LiveData<List<Player>>
     suspend fun nextRound()
     suspend fun chooseMeme(imageUrl: String)
+    suspend fun chooseWinner(id: String)
 }

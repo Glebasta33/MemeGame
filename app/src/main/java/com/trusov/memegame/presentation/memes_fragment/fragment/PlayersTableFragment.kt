@@ -7,12 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trusov.memegame.App
 import com.trusov.memegame.databinding.PlayersTableFragmentBinding
 import com.trusov.memegame.di.ViewModelFactory
-import com.trusov.memegame.domain.entity.Meme
 import com.trusov.memegame.presentation.memes_fragment.adapter.PlayersCardAdapter
+import com.trusov.memegame.presentation.memes_fragment.view_model.PlayersTableViewModel
 import javax.inject.Inject
 
 class PlayersTableFragment : Fragment() {
@@ -60,6 +61,10 @@ class PlayersTableFragment : Fragment() {
                     memesAdapter.submitList(players)
                 }
             }
+        }
+        memesAdapter.onMemeClickListener = {
+            Toast.makeText(activity, "${it.name} ${it.id}", Toast.LENGTH_SHORT).show()
+            viewModel.chooseWinner(it.id)
         }
     }
 

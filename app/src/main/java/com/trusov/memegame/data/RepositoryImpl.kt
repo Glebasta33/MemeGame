@@ -212,6 +212,14 @@ class RepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun chooseWinner(id: String) {
+        val doc = firebase.collection("players")
+            .get().await().documents.find { it["id"] == id}
+        val score = doc?.get("score")?.toString()?.toInt()
+        firebase.collection("players").document(doc?.id ?: "")
+            .update("score", score?.plus(1))
+    }
+
 
     private fun getNames(htmlCode: String): List<String> {
         val pattern = Pattern.compile("$PATTERN_START(.*?)$PATTERN_END")

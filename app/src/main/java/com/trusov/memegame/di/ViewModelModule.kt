@@ -3,7 +3,7 @@ package com.trusov.memegame.di
 import androidx.lifecycle.ViewModel
 import com.trusov.memegame.presentation.games_fragment.view_model.GamesHubViewModel
 import com.trusov.memegame.presentation.meme_fullscreen_fragment.view_model.MemeFullScreenViewModel
-import com.trusov.memegame.presentation.memes_fragment.fragment.PlayersTableViewModel
+import com.trusov.memegame.presentation.memes_fragment.view_model.PlayersTableViewModel
 import com.trusov.memegame.presentation.memes_fragment.view_model.MemesViewModel
 import com.trusov.memegame.presentation.sign_up_fragment.SignUpViewModel
 import dagger.Binds
