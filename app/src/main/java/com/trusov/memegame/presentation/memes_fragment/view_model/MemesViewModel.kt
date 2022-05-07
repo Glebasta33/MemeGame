@@ -14,7 +14,8 @@ class MemesViewModel @Inject constructor(
     private val getRandomQuestionUseCase: GetRandomQuestionUseCase,
     private val getGameUseCase: GetGameUseCase,
     private val getPlayersUseCase: GetPlayersUseCase,
-    private val nextRoundUseCase: NextRoundUseCase
+    private val nextRoundUseCase: NextRoundUseCase,
+    private val getWinnerUseCase: GetWinnerUseCase
 ) : ViewModel() {
 
     private var _memes = MutableLiveData<List<Meme>>()
@@ -52,6 +53,8 @@ class MemesViewModel @Inject constructor(
             nextRoundUseCase()
         }
     }
+
+    fun getWinner(gameId: String) = getWinnerUseCase(gameId)
 
     override fun onCleared() {
         super.onCleared()

@@ -2,6 +2,7 @@ package com.trusov.memegame.presentation.memes_fragment.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 import com.trusov.memegame.App
 import com.trusov.memegame.R
 import com.trusov.memegame.databinding.FragmentMemesBinding
@@ -20,6 +22,7 @@ import com.trusov.memegame.di.ViewModelFactory
 import com.trusov.memegame.presentation.memes_fragment.adapter.PlayerAdapter
 import com.trusov.memegame.presentation.memes_fragment.adapter.MemesAdapter
 import com.trusov.memegame.presentation.memes_fragment.view_model.MemesViewModel
+import com.trusov.memegame.presentation.memes_fragment.view_model.PlayersTableViewModel
 import javax.inject.Inject
 
 class MemesFragment : Fragment() {
@@ -76,21 +79,32 @@ class MemesFragment : Fragment() {
                     playerAdapter.players.clear()
                     playerAdapter.players.addAll(players.toMutableList())
                     playerAdapter.notifyDataSetChanged()
-                    val isNotHost = players.find { it.id == auth.currentUser?.uid }?.host != 1
-                    binding.floatingActionButtonShowQuestion.isGone = isNotHost
-                    if (!isNotHost) {
+                    val isHost = players.find { it.id == auth.currentUser?.uid }?.host == 1
+                    binding.floatingActionButtonShowQuestion.isGone = !isHost
+                    if (isHost) {
                         Toast.makeText(
                             activity,
                             "Вы ведуший! Выберите самый смешной ответ на вопрос",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
                 }
-
+                viewModel.getWinner(game.id).observe(viewLifecycleOwner) {
+                    Picasso.get().load(it.chosenMemeUrl).into(binding.ivMeme)
+                    binding.tvWinner.text = "${it.name}. Счёт: ${it.score}"
+                    binding.cvMotionCard.isGone = false
+                    binding.cvMotionCard.animate().scaleY(2F).duration = 500
+                    binding.cvMotionCard.animate().scaleX(2F).duration = 500
+                    binding.cardQuestion.isGone = true
+                }
             }
-
         }
+
+        binding.ivCloseWinner.setOnClickListener {
+            binding.cvMotionCard.isGone = true
+        }
+
+
         val memesAdapter = MemesAdapter()
         binding.rvMemes.adapter = memesAdapter
         binding.rvMemes.layoutManager = GridLayoutManager(activity, 2)

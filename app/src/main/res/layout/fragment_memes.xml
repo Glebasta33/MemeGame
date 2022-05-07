@@ -6,6 +6,60 @@
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cv_motion_card"
+        android:layout_width="150dp"
+        android:layout_height="200dp"
+        android:layout_margin="4dp"
+        android:backgroundTint="@color/paper"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_meme"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scaleType="centerInside"
+                app:layout_constraintTop_toBottomOf="@+id/iv_close_winner"
+                app:layout_constraintBottom_toTopOf="@id/tv_winner"
+                android:src="@drawable/ic_launcher_background" />
+
+            <TextView
+                android:id="@+id/tv_winner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Winner"
+                android:textSize="11sp"
+                android:paddingBottom="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <ImageView
+                android:id="@+id/iv_close_winner"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/close_button"
+                android:src="@drawable/ic_close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/card_game_panel"
         android:layout_width="300dp"
         android:layout_height="70dp"
@@ -24,10 +78,10 @@
             android:layout_height="match_parent"
             android:paddingTop="20dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_players"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_players"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -74,10 +128,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="210dp"
                 android:layout_margin="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -115,11 +169,11 @@
         android:layout_margin="20dp"
         android:backgroundTint="@color/paper"
         android:clickable="true"
+        android:focusable="true"
         android:visibility="gone"
         app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_receipt_24"
-        android:focusable="true" />
+        app:srcCompat="@drawable/ic_baseline_receipt_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
