@@ -18,4 +18,5 @@ interface Repository {
     suspend fun nextRound()
     suspend fun chooseMeme(imageUrl: String)
     suspend fun chooseWinner(id: String)
+    fun getWinner(gameId: String): LiveData<Player>
 }

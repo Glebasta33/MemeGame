@@ -182,17 +182,12 @@ class RepositoryImpl @Inject constructor(
         }
         val currentHost = players.find { it.host == 1}
         val indexOfHost: Int = players.indexOf(currentHost)
-        Log.d(LOG_TAG, "indexOfHost: $indexOfHost")
         var indexOfNextHost = 0
         if (indexOfHost < players.size - 1 ) {
-            Log.d(LOG_TAG, "players.size: ${players.size}")
             indexOfNextHost = indexOfHost + 1
         }
-        Log.d(LOG_TAG, "indexOfNextHost: $indexOfNextHost")
         val nextHost = players[indexOfNextHost]
 
-        Log.d(LOG_TAG, "currentHost: $currentHost")
-        Log.d(LOG_TAG, "nextHost: $nextHost")
         firebase.collection("players").document(currentHost?.id ?: "")
             .update("host", 0)
         firebase.collection("players").document(nextHost.id)
@@ -200,6 +195,10 @@ class RepositoryImpl @Inject constructor(
         for (player in players) {
             firebase.collection("players").document(player.id)
                 .update("chosenMemeUrl", null)
+        }
+        for (player in players) {
+            firebase.collection("players").document(player.id)
+                .update("winner", 0)
         }
 
     }
@@ -218,6 +217,34 @@ class RepositoryImpl @Inject constructor(
         val score = doc?.get("score")?.toString()?.toInt()
         firebase.collection("players").document(doc?.id ?: "")
             .update("score", score?.plus(1))
+        firebase.collection("players").document(doc?.id ?: "")
+            .update("winner", 1)
+    }
+
+    override fun getWinner(gameId: String): LiveData<Player> {
+        val liveData = MutableLiveData<Player>()
+        firebase.collection("players").addSnapshotListener { value, error ->
+            value?.let {
+                val docs = it.documents.filter { it["currentGameId"] == gameId }
+                val playersList = mutableListOf<Player>()
+                for (doc in docs) {
+                    playersList.add(
+                        Player(
+                            name = doc["name"].toString(),
+                            score = doc["score"].toString().toInt(),
+                            id = doc["id"].toString(),
+                            host = doc["host"].toString().toInt(),
+                            chosenMemeUrl = doc["chosenMemeUrl"]?.toString(),
+                            winner = doc["winner"].toString().toInt()
+                        )
+                    )
+                }
+                Log.d(LOG_TAG, playersList.toString())
+                val winner = playersList.find { it.winner == 1 }
+                winner?.let { liveData.value = it }
+            }
+        }
+        return liveData
     }
 
 
